@@ -1,0 +1,124 @@
+@import "tailwindcss";
+
+@theme {
+  /* ── Background: Very light cream/mint ── */
+  --color-bg:            #EEF6F2;
+  --color-bg-subtle:     #E5F2EB;
+  --color-surface:       #FFFFFF;
+  --color-surface-hover: #F8FAF9;
+
+  /* ── Large Visible Flat Color Surfaces ── */
+  --color-mint-card:     #DBF0E7;
+  --color-mint-border:   #BFDFD1;
+  --color-peach-card:    #FCE4DE;
+  --color-peach-border:  #F8C8BF;
+  --color-lavender-card: #EDE7FA;
+  --color-lavender-border:#D7CDF5;
+  --color-amber-card:    #FEF0D8;
+  --color-amber-border:  #F9D9A8;
+
+  /* ── Sidebar ── */
+  --color-sidebar-bg:    #E8F4EE;
+  --color-sidebar-border:#D3E8DE;
+  --color-sidebar-hover: #D7EDE2;
+
+  /* ── Text: Deep charcoal forest (#142521) ── */
+  --color-text:          #142521;
+  --color-text-secondary:#39544D;
+  --color-muted:         #67827A;
+
+  /* ── Primary Brand: Deep Teal (#0F6857) ── */
+  --color-accent:        #0F6857;
+  --color-accent-hover:  #0A4D40;
+  --color-accent-light:  #DBF0E7;
+  --color-accent-ring:   rgba(15, 104, 87, 0.22);
+
+  /* ── Status Colors ── */
+  --color-status-normal:        #0F6857;
+  --color-status-normal-bg:     #D8F2E7;
+  --color-status-normal-border: #BCE5D3;
+
+  --color-status-low:        #A8372B;
+  --color-status-low-accent: #E05345;
+  --color-status-low-bg:     #FCE4DE;
+  --color-status-low-border: #F8C8BF;
+
+  --color-status-high:        #9A6214;
+  --color-status-high-accent: #D68427;
+  --color-status-high-bg:     #FEF0D8;
+  --color-status-high-border: #F9D9A8;
+
+  --color-status-unknown:        #554095;
+  --color-status-unknown-bg:     #EDE7FA;
+  --color-status-unknown-border: #D7CDF5;
+
+  /* ── Typography ── */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  ::selection {
+    background-color: var(--color-mint-card);
+    color: var(--color-accent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  .animate-fadein {
+    animation: fadein 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  @keyframes fadein {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fadein-flat {
+    animation: fadein-flat 0.2s ease both;
+  }
+  @keyframes fadein-flat {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .animate-scanline {
+    animation: scanline 1.6s ease-in-out infinite;
+  }
+  @keyframes scanline {
+    0% { top: 0%; opacity: 0; }
+    15% { opacity: 1; }
+    85% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  .animate-dot-pulse {
+    animation: dotPulse 1.4s ease-in-out infinite;
+  }
+  @keyframes dotPulse {
+    0%, 100% { transform: scale(0.85); opacity: 0.5; }
+    50% { transform: scale(1.15); opacity: 1; }
+  }
+}
