@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db, isFirebaseConfigured } from "@/lib/firebase";
 import PageShell from "@/components/PageShell";
 import { Label, Input, Textarea, Select, FieldGroup } from "@/components/FormFields";
 import { Check, User, Heart, ShieldCheck, Sparkles } from "lucide-react";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const DEMO_PATIENT_ID = "demo-patient-1";
+const SAVE_TIMEOUT_MS = 10000; // 10s timeout to prevent hanging UI on production
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 type Sex = "male" | "female" | "other" | "prefer_not_to_say" | "";
@@ -41,9 +42,15 @@ const COMMON_SYMPTOMS = [
 
 // ── Firestore save (merge updates demo-patient-1) ────────────────────────────
 async function savePatientToFirestore(data: PatientFormData): Promise<void> {
+  if (!isFirebaseConfigured()) {
+    throw new Error(
+      "Firebase configuration missing. Please verify NEXT_PUBLIC_FIREBASE_* variables in your environment."
+    );
+  }
+
   const docRef = doc(db, "patients", DEMO_PATIENT_ID);
 
-  await setDoc(
+  const savePromise = setDoc(
     docRef,
     {
       name:               data.name.trim(),
@@ -59,6 +66,20 @@ async function savePatientToFirestore(data: PatientFormData): Promise<void> {
     },
     { merge: true }
   );
+
+  const timeoutPromise = new Promise<never>((_, reject) =>
+    setTimeout(
+      () =>
+        reject(
+          new Error(
+            "Save operation timed out. Please check your network connection or Firebase credentials."
+          )
+        ),
+      SAVE_TIMEOUT_MS
+    )
+  );
+
+  await Promise.race([savePromise, timeoutPromise]);
 }
 
 export default function IntakePage() {
@@ -130,7 +151,8 @@ export default function IntakePage() {
     } catch (err) {
       console.error("[IntakePage] Firestore save failed:", err);
       setSaved(false);
-      setError("Couldn't save. Please try again.");
+      const msg = err instanceof Error ? err.message : "Couldn't save. Please try again.";
+      setError(msg);
     } finally {
       setSaving(false);
     }

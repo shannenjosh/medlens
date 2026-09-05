@@ -27,3 +27,11 @@ const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 
 /** Firestore database instance — import this wherever you need Firestore. */
 export const db = getFirestore(app);
+
+/** Helper to check if Firebase is configured with required environment variables */
+export function isFirebaseConfigured(): boolean {
+  return Boolean(
+    process.env.NEXT_PUBLIC_FIREBASE_API_KEY &&
+    process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
+  );
+}
